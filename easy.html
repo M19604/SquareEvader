@@ -1,146 +1,192 @@
+<title>Square Evader - Easy</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=VT323">
-<div class="title">SQUARE EVADER</div>
-<div class="subtitle">PRESS UP AND DOWN TO SELECT AND SPACE TO PLAY</div>
-<div class="modes" id="modes">
-<div class="mode" id="mode1">EASY</div>
-<div class="mode" id="mode2">MEDIUM</div>
-<div class="mode" id="mode3">HARD</div>
+<div id="player" class="humanoid"></div>
+<div id="enemy" class="humanoid"></div>
+<div id="coin" class="humanoid"></div>
+<span id="coins">0</span>
+<div id="endScreen" onclick="replay()">
+<div class="title">GAME OVER</div>
+<div id="endPoints">0 Points</div>
 </div>
 <style>
-body {
-background-image: linear-gradient(15deg, #221638, #121212 50%);
-font-family: "VT323";
-user-select: none;
-overflow: hidden;
-}
-
-div.subtitle,
-div.title {
-height: 50%;
-display: flex;
-align-items: center;
-width: 100%;
-justify-content: center;
-font-size: 10vw;
-background: -webkit-linear-gradient(#693096 33%, #fc637a 33%, #fc637a 33%);
--webkit-background-clip: text;
--webkit-text-fill-color: transparent;
-font-weight: 1000;
-}
-
-div.subtitle {
-font-size: 3vw;
-position: absolute;
-top: 15%;
-
-}
-
-div.modes {
-width: 50%;
-height: 25%;
-border: 1vw solid #AAFF00;
-position: absolute;
-bottom: 25%;
-left: 25%;
-display: flex;
-align-items: center;
-justify-content: center;
-overflow: hidden;
-box-sizing: border-box;
-}
-
-div.mode {
-color: #AAFF00;
-font-size: 8vw;
-font-weight: bold;
-width: 100%;
+  body {
+margin: 0;
 height: 100%;
-display: flex;
-align-items: center;
-justify-content: center;
+width: 100%;
+background-color: #222;
+user-select: none;
+font-family: "VT323";
+cursor: none;
+}
+
+div.humanoid {
+height: 5vw;
+width: 5vw;
+box-sizing: border-box;
+border: .3vw solid #111;
+display: inline-block;
 position: absolute;
+bottom: 0;
 left: 0;
 }
 
-div.#mode1 {
+#player {
+background-color: mediumseagreen;
+}
+
+::-webkit-scrollbar {
+display: none;
+}
+
+#enemy {
+background-color: tomato;
+left: 95vw;
+}
+
+#coin {
+background-color: gold;
+}
+
+#coins {
+color: white;
+font-weight: bold;
+position: absolute;
+top: 1%;
+right: 1%;
+font-size: 2vw;
+}
+
+div#endScreen {
+height: 100%;
+width: 100%;
+background-color: rgba(0,0,0,0.75);
+position: absolute;
 top: 0;
+left: 0;
+opacity: 0;
+display: none;
 }
 
-div#mode2 {
-top: 100%;
+div#endScreen div.title {
+color: tomato;
+font-size: 7vw;
+font-weight: bold;
+width: 100%;
+position: absolute;
+top: 20%;
+left: 0;
+display: flex;
+justify-content: center;
 }
 
-div#mode3 {
-top: 200%;
+div#endScreen div#endPoints {
+color: tomato;
+font-size: 3vw;
+font-weight: 1000;
+width: 100%;
+position: absolute;
+bottom: 50%;
+left: 0;
+text-align: center;
 }
 </style>
 <script>
-  var mode = 1;
-var mode1 = document.getElementById("mode1");
-var mode2 = document.getElementById("mode2");
-var mode3 = document.getElementById("mode3");
-var colors = ["#AAFF00", "gold", "tomato"];
-var links = [];
-document.addEventListener("keyup", e => {
-if (e.key === "s" || e.key === "ArrowDown") {
-if (mode === 1) {
-mode1.style.top = "-50%";
-mode2.style.top = "50%";
-mode3.style.top = "150%";
-setTimeout(function() {
-mode1.style.top = "-100%";
-mode2.style.top = "0%";
-mode3.style.top = "100%";
-document.getElementById("modes").style.border = "1vw solid " + colors[mode];
-document.getElementById("mode2").style.color = colors[mode];
-mode += 1;
-}, 250)
+  var playerX = 0;
+var playerY = 0;
+var enemyX = 95;
+var enemyY = 0;
+var player = document.getElementById("player");
+var enemy = document.getElementById("enemy");
+var coin = document.getElementById("coin");
+var coins = 0;
+document.body.addEventListener("keydown", e => {
+if (e.key === "w") {
+playerY += 1;
 }
-if (mode === 2) {
-mode1.style.top = "-100%";
-mode2.style.top = "-50%";
-mode3.style.top = "50%";
-setTimeout(function() {
-mode1.style.top = "-200%";
-mode2.style.top = "-100%";
-mode3.style.top = "0%";
-}, 250)
-document.getElementById("modes").style.border = "1vw solid " + colors[mode];
-document.getElementById("mode3").style.color = colors[mode];
-mode += 1;
+if (e.key === "a") {
+playerX -= 1;
 }
+if (e.key === "s") {
+playerY -= 1;
 }
+if (e.key === "d") {
+playerX += 1;
+}
+player.style.bottom = playerY + "vw";
+player.style.left = playerX + "vw";
+})
 
-if (e.key === "w" || e.key === "ArrowUp") {
-if (mode === 2) {
-mode1.style.top = "-50%";
-mode2.style.top = "50%";
-mode3.style.top = "150%";
+function startGame() {
+setInterval(function() {
+if (playerX >= parseInt(coin.style.left.replace("vw", "")) - 2 && playerX <= parseInt(coin.style.left.replace("vw", "")) + 2 && playerY <= parseInt(coin.style.bottom.replace("vw", "")) + 2 && playerY >= parseInt(coin.style.bottom.replace("vw", "")) - 2) {
+repositionCoin();
+document.getElementById("coins").textContent = coins += 1;
+}
+if (playerX === enemyX && playerY === enemyY) {
+clearInterval(interval);
+document.getElementById("endPoints").textContent = coins + " Points"
+document.getElementById("endScreen").style.display = "block";
 setTimeout(function() {
-mode1.style.top = "0%";
-mode2.style.top = "100%";
-mode3.style.top = "200%";
-}, 250)
-mode -= 1;
-document.getElementById("modes").style.border = "1vw solid " + colors[mode - 1];
-document.getElementById("mode1").style.color = colors[mode - 1];
-}
-if (mode === 3) {
-mode1.style.top = "-100%";
-mode2.style.top = "-50%";
-mode3.style.top = "50%";
-setTimeout(function() {
-mode1.style.top = "-100%";
-mode2.style.top = "0%";
-mode3.style.top = "100%";
-}, 250)
-mode -= 1;
-document.getElementById("modes").style.border = "1vw solid " + colors[mode - 1];
-document.getElementById("mode2").style.color = colors[mode - 1];
-}
-}
-if (e.key === " ") {
-window.open(links[mode]);
+document.getElementById("endScreen").style.opacity = 1;
+}, 500)
 }
 })
+
+var interval = setInterval(function() {
+if (enemyX > playerX && enemyY > playerY) {
+enemyX -=1;
+enemyY -=1;
+} else if (enemyX < playerX && enemyY < playerY) {
+enemyX += 1;
+enemyY += 1;
+} else if (enemyX > playerX && enemyY < playerY) {
+enemyX -= 1;
+enemyY += 1;
+} else if (enemyX < playerX && enemyY > playerY) {
+enemyX += 1;
+enemyY -= 1;
+} else if (enemyX > playerX) {
+enemyX -= 1;
+} else if (enemyX < playerX) {
+enemyX += 1;
+} else if (enemyY > playerY) {
+enemyY -= 1;
+} else if (enemyY < playerY) {
+enemyY += 1;
+}
+enemy.style.left = enemyX + "vw";
+enemy.style.bottom = enemyY + "vw";
+if (playerX < 0 || playerX > 100 || playerY < 0 || playerY > 80) {
+enemyX = playerX;
+enemyY = playerY;
+}
+}, 100)
+}
+
+startGame();
+repositionCoin();
+
+function repositionCoin() {
+coin.style.bottom = Math.floor(Math.random() * 40) + "vw";
+coin.style.left = Math.floor(Math.random() * 95) + "vw";
+}
+
+function replay() {
+playerX = 0;
+playerY = 0;
+player.style.bottom = 0;
+player.style.left = 0;
+enemyX = 95;
+enemyY = 0;
+enemy.style.bottom = 0;
+enemy.style.left = "95vw";
+coins = 0;
+repositionCoin();
+document.getElementById("endScreen").style.opacity = 0;
+setTimeout(function() {
+document.getElementById("endScreen").style.display = "none";
+document.getElementById("coins").textContent = coins;
+startGame();
+}, 500)
+}
 </script>
