@@ -1,0 +1,147 @@
+<title>Square Evader</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=VT323">
+<div class="title">SQUARE EVADER</div>
+<div class="subtitle">PRESS UP AND DOWN TO SELECT AND SPACE TO PLAY</div>
+<div class="modes" id="modes">
+<div class="mode" id="mode1">EASY</div>
+<div class="mode" id="mode2">MEDIUM</div>
+<div class="mode" id="mode3">HARD</div>
+</div>
+<style>
+  body {
+background-image: linear-gradient(15deg, #221638, #121212 50%);
+font-family: "VT323";
+user-select: none;
+overflow: hidden;
+}
+
+div.subtitle,
+div.title {
+height: 50%;
+display: flex;
+align-items: center;
+width: 100%;
+justify-content: center;
+font-size: 10vw;
+background: -webkit-linear-gradient(#693096 33%, #fc637a 33%, #fc637a 33%);
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+font-weight: 1000;
+}
+
+div.subtitle {
+font-size: 3vw;
+position: absolute;
+top: 15%;
+
+}
+
+div.modes {
+width: 50%;
+height: 25%;
+border: 1vw solid #AAFF00;
+position: absolute;
+bottom: 25%;
+left: 25%;
+display: flex;
+align-items: center;
+justify-content: center;
+overflow: hidden;
+box-sizing: border-box;
+}
+
+div.mode {
+color: #AAFF00;
+font-size: 8vw;
+font-weight: bold;
+width: 100%;
+height: 100%;
+display: flex;
+align-items: center;
+justify-content: center;
+position: absolute;
+left: 0;
+}
+
+div.#mode1 {
+top: 0;
+}
+
+div#mode2 {
+top: 100%;
+}
+
+div#mode3 {
+top: 200%;
+}
+</style>
+<script>
+var mode = 1;
+var mode1 = document.getElementById("mode1");
+var mode2 = document.getElementById("mode2");
+var mode3 = document.getElementById("mode3");
+var colors = ["#AAFF00", "gold", "tomato"];
+var links = [];
+document.addEventListener("keyup", e => {
+if (e.key === "s" || e.key === "ArrowDown") {
+if (mode === 1) {
+mode1.style.top = "-50%";
+mode2.style.top = "50%";
+mode3.style.top = "150%";
+setTimeout(function() {
+mode1.style.top = "-100%";
+mode2.style.top = "0%";
+mode3.style.top = "100%";
+document.getElementById("modes").style.border = "1vw solid " + colors[mode];
+document.getElementById("mode2").style.color = colors[mode];
+mode += 1;
+}, 250)
+}
+if (mode === 2) {
+mode1.style.top = "-100%";
+mode2.style.top = "-50%";
+mode3.style.top = "50%";
+setTimeout(function() {
+mode1.style.top = "-200%";
+mode2.style.top = "-100%";
+mode3.style.top = "0%";
+}, 250)
+document.getElementById("modes").style.border = "1vw solid " + colors[mode];
+document.getElementById("mode3").style.color = colors[mode];
+mode += 1;
+}
+}
+
+if (e.key === "w" || e.key === "ArrowUp") {
+if (mode === 2) {
+mode1.style.top = "-50%";
+mode2.style.top = "50%";
+mode3.style.top = "150%";
+setTimeout(function() {
+mode1.style.top = "0%";
+mode2.style.top = "100%";
+mode3.style.top = "200%";
+}, 250)
+mode -= 1;
+document.getElementById("modes").style.border = "1vw solid " + colors[mode - 1];
+document.getElementById("mode1").style.color = colors[mode - 1];
+}
+if (mode === 3) {
+mode1.style.top = "-100%";
+mode2.style.top = "-50%";
+mode3.style.top = "50%";
+setTimeout(function() {
+mode1.style.top = "-100%";
+mode2.style.top = "0%";
+mode3.style.top = "100%";
+}, 250)
+mode -= 1;
+document.getElementById("modes").style.border = "1vw solid " + colors[mode - 1];
+document.getElementById("mode2").style.color = colors[mode - 1];
+}
+}
+if (e.key === " ") {
+window.open(links[mode]);
+}
+})
+</script>
