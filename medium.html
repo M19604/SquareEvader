@@ -1,0 +1,236 @@
+<title>Square Evader - Medium</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=VT323">
+<div id="player" class="humanoid"></div>
+<div id="enemy" class="humanoid"></div>
+<div id="enemy1" class="humanoid"></div>
+<div id="coin" class="humanoid"></div>
+<span id="coins">0</span>
+<div id="endScreen" onclick="replay()">
+<div class="title">GAME OVER</div>
+<div id="endPoints">0 Points</div>
+</div>
+<style>
+  body {
+margin: 0;
+height: 100%;
+width: 100%;
+background-color: #222;
+user-select: none;
+font-family: "VT323";
+}
+
+div.humanoid {
+height: 5vw;
+width: 5vw;
+box-sizing: border-box;
+border: .3vw solid #111;
+display: inline-block;
+position: absolute;
+bottom: 0;
+left: 0;
+}
+
+#player {
+background-color: mediumseagreen;
+}
+
+::-webkit-scrollbar {
+display: none;
+}
+
+#enemy {
+background-color: tomato;
+left: 95vw;
+}
+
+#enemy1 {
+background-color: tomato;
+left: 0;
+bottom: 40vw;
+}
+
+#coin {
+background-color: gold;
+}
+
+#coins {
+color: white;
+font-weight: bold;
+position: absolute;
+top: 1%;
+right: 1%;
+font-size: 2vw;
+}
+
+div#endScreen {
+height: 100%;
+width: 100%;
+background-color: rgba(0,0,0,0.75);
+position: absolute;
+top: 0;
+left: 0;
+opacity: 0;
+display: none;
+}
+
+div#endScreen div.title {
+color: tomato;
+font-size: 7vw;
+font-weight: bold;
+width: 100%;
+position: absolute;
+top: 20%;
+left: 0;
+display: flex;
+justify-content: center;
+}
+
+div#endScreen div#endPoints {
+color: tomato;
+font-size: 3vw;
+font-weight: 1000;
+width: 100%;
+position: absolute;
+bottom: 50%;
+left: 0;
+text-align: center;
+}
+</style>
+<script>
+  var playerX = 0;
+var playerY = 0;
+var enemyX = 95;
+var enemyY = 0;
+var enemy1X = 0;
+var enemy1Y = 40;
+var player = document.getElementById("player");
+var enemy = document.getElementById("enemy");
+var enemy1 = document.getElementById("enemy1");
+var coin = document.getElementById("coin");
+var coins = 0;
+document.body.addEventListener("keydown", e => {
+if (e.key === "w") {
+playerY += 1;
+}
+if (e.key === "a") {
+playerX -= 1;
+}
+if (e.key === "s") {
+playerY -= 1;
+}
+if (e.key === "d") {
+playerX += 1;
+}
+player.style.bottom = playerY + "vw";
+player.style.left = playerX + "vw";
+})
+
+function startGame() {
+setInterval(function() {
+if (playerX >= parseInt(coin.style.left.replace("vw", "")) - 2 && playerX <= parseInt(coin.style.left.replace("vw", "")) + 2 && playerY <= parseInt(coin.style.bottom.replace("vw", "")) + 2 && playerY >= parseInt(coin.style.bottom.replace("vw", "")) - 2) {
+repositionCoin();
+document.getElementById("coins").textContent = coins += 1;
+}
+if (playerX === enemyX && playerY === enemyY || playerX === enemy1X && playerY === enemy1Y) {
+clearInterval(interval);
+document.getElementById("endPoints").textContent = coins + " Points"
+document.getElementById("endScreen").style.display = "block";
+setTimeout(function() {
+document.getElementById("endScreen").style.opacity = 1;
+}, 500)
+}
+})
+
+var interval = setInterval(function() {
+if (enemyX > playerX && enemyY > playerY) {
+enemyX -=1;
+enemyY -=1;
+} else if (enemyX < playerX && enemyY < playerY) {
+enemyX += 1;
+enemyY += 1;
+} else if (enemyX > playerX && enemyY < playerY) {
+enemyX -= 1;
+enemyY += 1;
+} else if (enemyX < playerX && enemyY > playerY) {
+enemyX += 1;
+enemyY -= 1;
+} else if (enemyX > playerX) {
+enemyX -= 1;
+} else if (enemyX < playerX) {
+enemyX += 1;
+} else if (enemyY > playerY) {
+enemyY -= 1;
+} else if (enemyY < playerY) {
+enemyY += 1;
+}
+if (enemy1X > playerX && enemy1Y > playerY) {
+enemy1X -=1;
+enemy1Y -=1;
+} else if (enemy1X < playerX && enemy1Y < playerY) {
+enemy1X += 1;
+enemy1Y += 1;
+} else if (enemy1X > playerX && enemy1Y < playerY) {
+enemy1X -= 1;
+enemy1Y += 1;
+} else if (enemy1X < playerX && enemy1Y > playerY) {
+enemy1X += 1;
+enemy1Y -= 1;
+} else if (enemy1X > playerX) {
+enemy1X -= 1;
+} else if (enemy1X < playerX) {
+enemy1X += 1;
+} else if (enemy1Y > playerY) {
+enemyY -= 1;
+} else if (enemy1Y < playerY) {
+enemy1Y += 1;
+}
+enemy.style.left = enemyX + "vw";
+enemy.style.bottom = enemyY + "vw";
+enemy1.style.left = enemy1X + "vw";
+enemy1.style.bottom = enemy1Y + "vw";
+if (enemyX === enemy1X) {
+enemy1X += 5;
+enemy1.style.left = enemy1X + "vw";
+}
+if (enemyY === enemy1Y) {
+enemy1Y += 5;
+enemy1.style.left = enemy1Y + "vw";
+}
+if (playerX < 0 || playerX > 100 || playerY < 0 || playerY > 80) {
+enemyX = playerX;
+enemyY = playerY;
+}
+}, 100)
+}
+
+startGame();
+repositionCoin();
+
+function repositionCoin() {
+coin.style.bottom = Math.floor(Math.random() * 40) + "vw";
+coin.style.left = Math.floor(Math.random() * 95) + "vw";
+}
+
+function replay() {
+playerX = 0;
+playerY = 0;
+player.style.bottom = 0;
+player.style.left = 0;
+enemyX = 95;
+enemyY = 0;
+enemy.style.bottom = 0;
+enemy.style.left = "95vw";
+enemy1X = 0;
+enemy1Y = 40;
+enemy1.style.bottom = "40vw";
+enemy1.style.left = 0;
+coins = 0;
+repositionCoin();
+document.getElementById("endScreen").style.opacity = 0;
+setTimeout(function() {
+document.getElementById("endScreen").style.display = "none";
+document.getElementById("coins").textContent = coins;
+startGame();
+}, 500)
+}
+</script>
